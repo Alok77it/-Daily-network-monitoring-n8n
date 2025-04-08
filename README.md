@@ -14,6 +14,9 @@ This project automates a daily network report using [n8n](https://n8n.io), combi
 
 ## 📂 Workflow Overview
 
+![Workflow Diagram](assets/workflow_diagram.png)
+
+
 ### 🔁 Trigger
 
 - **Cron Node**: Runs the workflow daily at `08:00 AM`
