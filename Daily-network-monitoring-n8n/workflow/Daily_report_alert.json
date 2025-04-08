@@ -14,8 +14,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        0,
-        -120
+        -60,
+        -140
       ],
       "id": "562fbf32-d711-4add-849a-ea0ea7d52faf",
       "name": "Schedule Trigger"
@@ -27,8 +27,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        240,
-        -280
+        160,
+        -300
       ],
       "id": "3a0ac647-bbe5-486b-9596-02f4d1f89036",
       "name": "Execute Command",
@@ -76,7 +76,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        240,
+        160,
         60
       ],
       "id": "08c9d7da-7c61-486b-9625-d82e6b2033ec",
@@ -85,6 +85,123 @@
       "alwaysOutputData": true,
       "notesInFlow": false,
       "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        400,
+        -40
+      ],
+      "id": "c7bd5c5a-40c8-4757-95f5-c5d72e1872ba",
+      "name": "Merge Https"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        560,
+        -280
+      ],
+      "id": "2d77281b-bf88-443f-9fe2-cf62029cb981",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: {\n      api_1_response: item.json[\"HTTP Request\"]?.json ?? {},\n      api_2_response: item.json[\"HTTP Request 1\"]?.json ?? {},\n      command_result: {\n        stdout: item.json[\"Execute Command\"]?.stdout ?? \"No output\",\n        stderr: item.json[\"Execute Command\"]?.stderr ?? \"No error\",\n        exitCode: item.json[\"Execute Command\"]?.exitCode ?? \"No code\"\n      }\n    },\n    binary: item.binary\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -220
+      ],
+      "id": "5ad9ba7e-7a4e-4b18-b905-829ca2ce2c9a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "fromEmail": "aloktrivedi.it@gmail.com",
+        "toEmail": "alok.trivedi@nobroker.in",
+        "subject": "📊 Daily Ping + Screenshot Report",
+        "html": "=<p>Hello,</p>\n<p>Here is your daily server status report:</p>\n\n<h3>📡 Ping Report</h3>\n<pre>{{$json[\"command_result\"][\"stdout\"]}}</pre>\n\n<h3>🌐 API 1 Response</h3>\n<pre>{{ JSON.stringify($json[\"api_1_response\"], null, 2) }}</pre>\n\n<h3>🌐 API 2 Response</h3>\n<pre>{{ JSON.stringify($json[\"api_2_response\"], null, 2) }}</pre>\n\n<p>🖼️ Screenshot(s) attached below.</p>\n",
+        "options": {
+          "attachments": "screenshot1,screenshot2"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        -220
+      ],
+      "id": "ec79dc9e-0be5-4289-94f1-6dd4018c8cf3",
+      "name": "Daily ping report",
+      "webhookId": "0374fef9-378b-4fbc-a6ca-df5a219f2f8e",
+      "credentials": {
+        "smtp": {
+          "id": "x0q8bfUl2zRdbwnK",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "458772c2-4c75-4935-a9ee-a2f6e6a6bf02",
+              "leftValue": "=={{$json[\"stdout\"]}}",
+              "rightValue": "0",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        700,
+        -40
+      ],
+      "id": "3d81d008-5794-4ea0-b9b7-dc6342545ddc",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "=6418622154",
+        "text": "=🚨 n8n Workflow Alert 🚨\n❗ Email Sending Failed!\nSomething went wrong while trying to send an email in the workflow.\n\n📄 Error Details:\n{{$json[\"error\"] || \"No specific error message available.\"}}\n\n📢 Action Required:\nPlease check the workflow immediately and resolve the issue to restore email functionality.\n\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1140,
+        -20
+      ],
+      "id": "e1159734-d830-4336-acf4-71c77cf6bb73",
+      "name": "Telegram",
+      "webhookId": "d6ad50b1-f3fc-4fb2-807f-2d2c1e1e6097",
+      "credentials": {
+        "telegramApi": {
+          "id": "Y9csWCTsebQa1wrq",
+          "name": "Telegram account"
+        }
+      }
     },
     {
       "parameters": {
@@ -119,130 +236,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        240,
-        -120
+        160,
+        -140
       ],
       "id": "43fdca12-f452-4b17-b76d-aec7cf012bf7",
-      "name": "HTTP Request1",
+      "name": "HTTP Request 1",
       "alwaysOutputData": false,
       "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.1,
-      "position": [
-        460,
-        80
-      ],
-      "id": "c7bd5c5a-40c8-4757-95f5-c5d72e1872ba",
-      "name": "Merge Https"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.1,
-      "position": [
-        740,
-        80
-      ],
-      "id": "2d77281b-bf88-443f-9fe2-cf62029cb981",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "jsCode": "return [\n  {\n    json: {\n      api_1_response: $node[\"HTTP Request\"].json,\n      api_2_response: $node[\"HTTP Request 1\"].json,\n      command_result: {\n        stdout: $node[\"Execute Command\"].json[\"stdout\"] || \"No output\",\n        stderr: $node[\"Execute Command\"].json[\"stderr\"] || \"No error\",\n        exitCode: $node[\"Execute Command\"].json[\"exitCode\"] || \"No code\"\n      }\n    }\n  }\n];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1020,
-        80
-      ],
-      "id": "5ad9ba7e-7a4e-4b18-b905-829ca2ce2c9a",
-      "name": "Code"
-    },
-    {
-      "parameters": {
-        "fromEmail": "aloktrivedi.it@gmail.com",
-        "toEmail": "alok.trivedi@nobroker.in",
-        "subject": "📊 Daily Ping + Screenshot Report",
-        "html": "=<p>Hello,</p>\n\n<p>Here is your daily server status report:</p>\n\n<h3>📡 Ping Report</h3>\n<pre>{{$json[\"command_result\"][\"stdout\"]}}</pre>\n\n<h3>🌐 API 1 Response</h3>\n<pre>{{ JSON.stringify($json[\"api_1_response\"], null, 2) }}</pre>\n\n<h3>🌐 API 2 Response</h3>\n<pre>{{ JSON.stringify($json[\"api_2_response\"], null, 2) }}</pre>\n\n<p>🖼️ Screenshot(s) attached below.</p>\n",
-        "options": {
-          "attachments": "screenshot1,screenshot2"
-        }
-      },
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
-      "position": [
-        1200,
-        -60
-      ],
-      "id": "ec79dc9e-0be5-4289-94f1-6dd4018c8cf3",
-      "name": "Daily ping report",
-      "webhookId": "0374fef9-378b-4fbc-a6ca-df5a219f2f8e",
-      "credentials": {
-        "smtp": {
-          "id": "x0q8bfUl2zRdbwnK",
-          "name": "SMTP account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "458772c2-4c75-4935-a9ee-a2f6e6a6bf02",
-              "leftValue": "={{$json[\"error\"]}}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        460,
-        -280
-      ],
-      "id": "3d81d008-5794-4ea0-b9b7-dc6342545ddc",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "chatId": "=6418622154",
-        "text": "=🚨 n8n Workflow Error! Something went wrong in the workflow. Error Info: {{$json[\"error\"] || \"No error message available\"}}",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1160,
-        -260
-      ],
-      "id": "e1159734-d830-4336-acf4-71c77cf6bb73",
-      "name": "Telegram",
-      "webhookId": "d6ad50b1-f3fc-4fb2-807f-2d2c1e1e6097",
-      "credentials": {
-        "telegramApi": {
-          "id": "Y9csWCTsebQa1wrq",
-          "name": "Telegram account"
-        }
-      }
     }
   ],
   "pinData": {
@@ -279,7 +279,7 @@
             "index": 0
           },
           {
-            "node": "HTTP Request1",
+            "node": "HTTP Request 1",
             "type": "main",
             "index": 0
           }
@@ -290,7 +290,7 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -304,17 +304,6 @@
             "node": "Merge Https",
             "type": "main",
             "index": 1
-          }
-        ]
-      ]
-    },
-    "HTTP Request1": {
-      "main": [
-        [
-          {
-            "node": "Merge Https",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -334,7 +323,7 @@
       "main": [
         [
           {
-            "node": "Code",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -356,7 +345,7 @@
       "main": [
         [
           {
-            "node": "Merge",
+            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -369,13 +358,24 @@
           }
         ]
       ]
+    },
+    "HTTP Request 1": {
+      "main": [
+        [
+          {
+            "node": "Merge Https",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "4cf633b3-5fbc-4b64-990e-27a61385f519",
+  "versionId": "885b6f3f-7a0b-4f73-b2f6-3e5781b0d0ee",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "559d1ebd96c77e716578fd7cb99e9e1f3b5e1283aabf533d0791d6a14e94b130"
