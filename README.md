@@ -59,11 +59,11 @@ This project automates a daily network report using [n8n](https://n8n.io), combi
 
 ### 1️⃣ Email Setup
 
-See [`docs/email_setup.md`](docs/email_setup.md)
+See [`docs/email_setup.md`](Daily-network-monitoring-n8n/docs/email_setup.md)
 
 ### 2️⃣ Telegram Bot Setup
 
-See [`docs/telegram_bot_setup.md`](docs/telegram_bot_setup.md)
+See [`docs/telegram_bot_setup.md`](Daily-network-monitoring-n8n/docs/telegram_bot_setup.md)
 
 ---
 
