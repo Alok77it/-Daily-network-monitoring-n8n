@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "Python_practice_mini_project"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
