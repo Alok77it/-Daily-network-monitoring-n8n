@@ -14,7 +14,7 @@ This project automates a daily network report using [n8n](https://n8n.io), combi
 
 ## 📂 Workflow Overview
 
-![Workflow Diagram](assets/workflow_diagram.png)
+![Workflow Diagram](Daily-network-monitoring-n8n/assets/workflow_diagram.png)
 
 
 ### 🔁 Trigger
