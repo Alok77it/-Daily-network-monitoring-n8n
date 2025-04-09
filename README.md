@@ -43,15 +43,16 @@ This project automates a daily network report using [n8n](https://n8n.io), combi
      - Screenshots as attachments
 
 ---
+⚠️ Error Handling
+ - An IF Node is used to check the result of the command.
 
-## ⚠️ Error Handling
+ - The condition checks if the command output is empty:
 
-- **IF Nodes** check if:
-  - HTTP request failed
-  - Ping or Email step encountered error
-- **Fallback Actions**:
-  - Email with error details (optional)
-  - Telegram alert via bot
+  - ✅ Empty Output (True) → This means something went wrong → A Telegram alert is sent via bot.
+
+  - ❌ Non-Empty Output (False) → This means the command worked fine → An Email with the result is sent.
+
+This helps ensure you’re notified instantly if a command fails or returns nothing.
 
 ---
 
